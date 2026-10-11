@@ -3,6 +3,7 @@ package com.lockedin.backend.controller;
 import com.lockedin.backend.dto.MatchSuggestionResponse;
 import com.lockedin.backend.entity.Match;
 import com.lockedin.backend.entity.MatchType;
+import com.lockedin.backend.entity.UserSkill;
 import com.lockedin.backend.service.MatchingService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,16 @@ public class MatchController {
     @GetMapping("/suggestions")
     public List<MatchSuggestionResponse> getSuggestions(@AuthenticationPrincipal Long userId) {
         return matchingService.findMatchesFor(userId);
+    }
+
+    @GetMapping("/tutors")
+    public List<UserSkill> getAllTutors(@AuthenticationPrincipal Long userId) {
+        return matchingService.findAllTutors(userId);
+    }
+
+    @GetMapping("/accepted")
+    public List<Match> getAccepted(@AuthenticationPrincipal Long userId) {
+        return matchingService.getAcceptedMatches(userId);
     }
 
     @PostMapping("/accept")
