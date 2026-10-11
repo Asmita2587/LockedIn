@@ -1,0 +1,17 @@
+# Node / Frontend
+**/node_modules/
+**/dist/
+.env
+.env.local
+
+# Java / Maven / Backend
+**/target/
+**/data/
+*.mv.db
+*.trace.db
+*.log
+
+# Archives & OS files
+*.zip
+.DS_Store
+Thumbs.db
