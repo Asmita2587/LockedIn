@@ -13,5 +13,6 @@
 
 # Archives & OS files
 *.zip
+*.sql
 .DS_Store
 Thumbs.db

@@ -17,6 +17,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final CreditService creditService;
+    private final EmailService emailService;
     private final String allowedEmailDomain;
 
     public AuthService(
@@ -24,12 +25,14 @@ public class AuthService {
             PasswordEncoder passwordEncoder,
             JwtUtil jwtUtil,
             CreditService creditService,
+            EmailService emailService,
             @Value("${lockedin.signup.allowed-email-domain:}") String allowedEmailDomain
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.creditService = creditService;
+        this.emailService = emailService;
         this.allowedEmailDomain = allowedEmailDomain == null ? "" : allowedEmailDomain.trim();
     }
 
@@ -52,6 +55,16 @@ public class AuthService {
         user = userRepository.save(user);
 
         creditService.ensureInitialBaseline(user.getId());
+
+        final String recipientEmail = user.getEmail();
+        final String recipientName = user.getName();
+        java.util.concurrent.CompletableFuture.runAsync(() ->
+                emailService.send(
+                        recipientEmail,
+                        "Welcome to LockedIn!",
+                        "Hi " + recipientName + ",\n\nWelcome to LockedIn! Your account is ready and 10 welcome credits have been added to your balance.\n\nHappy learning!"
+                )
+        );
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail());
         return new AuthResponse(token, user.getId(), user.getName());
